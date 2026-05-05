@@ -1,14 +1,20 @@
 <template>
-  <div>
-    <h2>Admin Dashboard</h2>
-    <nav>
-      <router-link to="/admin">Analytic</router-link> |
-      <router-link to="/admin/members">Members</router-link> |
-      <router-link to="/admin/schedule">Schedule</router-link> |
-      <router-link to="/admin/attendance">Attendance</router-link>
-    </nav>
-    <router-view /> <!-- child routes render here -->
+  <div class="admin-dashboard">
+    <div class="admin-header">
+        <h2>Admin Dashboard</h2>
+    </div>
+    <div class="admin-menu">
+        <AdminMenu />
+    </div>
+
+    <div class="admin-content">
+        <router-view /> <!-- child routes render here -->
+    </div>  
+
+    <div class="admin-footer"></div>
   </div>
 </template>
 
 <script src="@/scripts/Admin/AdminView.js" />
+
+<style src="@/css/Admin/AdminView.css" />

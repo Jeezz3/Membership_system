@@ -1,0 +1,32 @@
+.admin-dashboard{
+    display:grid;
+    grid-template-areas: 
+        "header  header"
+        "menu  content"
+        "footer  footer";
+    grid-template-columns: 1fr 6fr;
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+}
+
+.admin-header{
+    grid-area: header;
+    display: flex;
+    grid-column: 2;   
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+}
+
+.admin-menu{
+    grid-area: menu;
+    justify-content: center;
+}
+
+.admin-content{
+    grid-area: content;
+}
+
+.admin-footer{
+    grid-area: footer;
+    grid-column: 1 / span 2;
+}

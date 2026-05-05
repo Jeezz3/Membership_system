@@ -1,6 +1,13 @@
 import axios from 'axios'
 
+
+import AdminMenu from "@/components/Admin/AdminMenu.vue"
+
+
 export default {
+  components: {
+    AdminMenu,
+  },
   data() {
     return { items: [] }
   },

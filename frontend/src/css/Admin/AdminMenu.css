@@ -1,0 +1,17 @@
+.p-menu{
+    display: flex;
+    justify-content: end;
+    background: transparent !important;
+    border: none !important
+
+}
+
+.p-menu-list{
+    display:flex;
+    justify-content: flex-end;
+}
+
+.p-menu-item{
+    display:flex;
+    margin-bottom: 1rem;
+}
