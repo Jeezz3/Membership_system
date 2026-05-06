@@ -2,13 +2,18 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Item
-from .serializers import ItemSerializer
+from .models import Item, Members, Membership
+from .serializers import ItemSerializer, MembersSerializer, MembershipSerializer
 
 # Create your views here.
 class ItemViewSet(ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    permission_classes = [IsAdminUser]
+
+class MembersViewSet(ModelViewSet):
+    queryset = Members.objects.all()
+    serializer_class = MembersSerializer
     permission_classes = [IsAdminUser]
 
 @api_view(['GET'])
@@ -18,3 +23,52 @@ def me(request):
         "username": request.user.username,
         "is_staff": request.user.is_staff
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def member_item(request):
+    members_list = Members.objects.using('members').all()
+
+    data = [
+        {
+        "id": member.id,
+        "name": member.first_name + " " + member.last_name, 
+        "status": member.status,
+        "created_at": member.created_at}
+    for member in members_list]
+
+
+    return Response({"data": data},status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def create_member(request):
+    serializer_member = MembersSerializer(data=request.data)
+    if not member_Serizlizer.is_valid():
+        return Response(serializer_member.errors, status=400)
+
+    member = serializer_member.save(using='members')
+
+
+    serializer_membership = MembershipSerializer(data=request.data)
+    if not serializer_membership.is_valid():
+        return Response(serializer_membership.errors, status=400)
+
+    membership = serializer_membership.save(member=member,using='membership')
+
+    return Response({
+        "member": serializer_member.data,
+        "membership": serializer_membership.data
+    }, status=201)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def delete_member(request, member_id):
+    try:
+        member = Members.objects.using('members').get(id=member_id)
+        member.delete(using='members')
+        return Response(status=204)
+    except Members.DoesNotExist:
+        return Response(status=404)

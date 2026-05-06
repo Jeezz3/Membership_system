@@ -88,9 +88,19 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'members': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'members.sqlite3',
+    },
+    'membership': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'membership.sqlite3',
     }
+    
 }
 
+DATABASE_ROUTERS = ['backend.db_routers.MembersRouter','backend.db_routers.MembershipRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
