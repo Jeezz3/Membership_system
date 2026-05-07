@@ -30,7 +30,7 @@ class Membership(models.Model):
     pause_start_date = models.DateTimeField(null=True, blank=True, default = None)
 
     def __str__(self):
-        return f'Membership for {self.member}'
+        return f'Membership for {self.member_id}'
     
     class Meta:
         app_label = 'api'

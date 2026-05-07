@@ -50,10 +50,6 @@ def create_member(request):
     
     member = Members.objects.using('members').create(**serializer_member.validated_data)
 
-    # serializer_membership = MembershipSerializer(data={**request.data, "member": member.id})
-    # if not serializer_membership.is_valid():
-    #     return Response(serializer_membership.errors, status=400)
-
     membership = Membership.objects.using('membership').create(member_id=member.id)
     serializer_membership = MembershipSerializer(membership)
 
@@ -61,6 +57,18 @@ def create_member(request):
         "member": serializer_member.data,
         "membership": serializer_membership.data
     }, status=201)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def get_membership(request,pk):
+    try:
+        membership = Membership.objects.using('membership').get(member_id=pk)
+    except Membership.DoesNotExist:
+        return Response({"error": "Membership not found"}, status=404)
+
+    # Serialize the model instance
+    serializer = MembershipSerializer(membership)
+    return Response(serializer.data)
 
 
 @api_view(['DELETE'])

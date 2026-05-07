@@ -8,7 +8,16 @@ import Row from 'primevue/row';
 import { FilterMatchMode } from '@primevue/core/api';
 
 import Dialog from 'primevue/dialog';
+
+
+
+import { Form } from '@primevue/forms';
 import InputText from 'primevue/inputtext';
+import DatePicker from 'primevue/datepicker';
+import InputNumber from 'primevue/inputnumber';
+import RadioButton from 'primevue/radiobutton';
+import RadioButtonGroup from 'primevue/radiobuttongroup';
+
 
 
 export default {
@@ -19,7 +28,12 @@ export default {
     ColumnGroup,
     Row,
     Dialog,
+    Form,
     InputText,
+    DatePicker,
+    InputNumber,
+    RadioButton,
+    RadioButtonGroup 
   },
   data() {
     return {
@@ -28,7 +42,8 @@ export default {
       filters: {
         global: {value: null, matchMode: FilterMatchMode.CONTAINS},
         name: {value: null, matchMode: FilterMatchMode.STARTS_WITH}
-      }
+      },
+      membership_dialog: false
     }
   },
   mounted() {
@@ -73,18 +88,32 @@ export default {
           input_data,
           {headers: { Authorization: `Bearer ${token}`}}
         );
+        console.log("Create member done");        
+      }catch{
+        alert("ERROR!");
+      }
+      // refresh list
+      this.get_member();
+    },
+    get_membership(requested_user){
+      const user_id = requested_user;
+      const token = localStorage.getItem('access');
+      try{
+        let input_data = {"member_id": user_id};
 
-        console.log("Create member done");
+        let res = axios.get('http://127.0.0.1:8000/api/get_membership/' + user_id + '/',
+          {headers: { Authorization: `Bearer ${token}`}}
+        );
 
+        res.then((resposne) => {
+          console.log(resposne);
+        })
 
-
-        
       }catch{
         alert("ERROR!");
       }
 
-      // refresh list
-      this.get_member();
+
 
     },
     show_add_member_dialog() {
@@ -92,6 +121,12 @@ export default {
     },
     hide_add_member_dialog() {
       this.add_member_dialog = false;
+    },
+    show_membership_dialog(){
+      this.membership_dialog = true;
+    },
+    hide_add_member_dialog(){
+      this.membership_dialog = false;
     }
   }
 }
