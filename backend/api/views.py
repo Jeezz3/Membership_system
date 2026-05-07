@@ -45,17 +45,17 @@ def member_item(request):
 @permission_classes([IsAdminUser])
 def create_member(request):
     serializer_member = MembersSerializer(data=request.data)
-    if not member_Serizlizer.is_valid():
+    if not serializer_member.is_valid():
         return Response(serializer_member.errors, status=400)
+    
+    member = Members.objects.using('members').create(**serializer_member.validated_data)
 
-    member = serializer_member.save(using='members')
+    # serializer_membership = MembershipSerializer(data={**request.data, "member": member.id})
+    # if not serializer_membership.is_valid():
+    #     return Response(serializer_membership.errors, status=400)
 
-
-    serializer_membership = MembershipSerializer(data=request.data)
-    if not serializer_membership.is_valid():
-        return Response(serializer_membership.errors, status=400)
-
-    membership = serializer_membership.save(member=member,using='membership')
+    membership = Membership.objects.using('membership').create(member_id=member.id)
+    serializer_membership = MembershipSerializer(membership)
 
     return Response({
         "member": serializer_member.data,

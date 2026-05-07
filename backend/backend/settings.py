@@ -10,6 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import atexit
+from django.core.management import call_command
+
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -139,3 +143,16 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+
+def flush_members_db():
+    try:
+        call_command('flush', database='members', interactive=False)
+        call_command('flush', database='membership', interactive=False)
+        print("Databases flushed on shutdown.")
+    except Exception as e:
+        print(f"Error flushing DBs: {e}")
+
+
+atexit.register(flush_members_db)
