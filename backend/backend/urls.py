@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.views import me 
 from api.views import member_item, create_member, delete_member, get_membership, edit_membership
-from api.views import get_schedule, create_schedule
+from api.views import get_schedule, create_schedule, get_all_schedule
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/create_member/', create_member, name='create_member'),
     path('api/get_membership/<int:pk>/', get_membership, name='get_membership'),
     path('api/edit_membership/<int:pk>/', edit_membership, name='edit_membership'),
-    path('api/get_schedule/', get_schedule, name='get_schedule'),
+    path('api/get_schedule/<int:pk>', get_schedule, name='get_schedule'),
+    path('api/get_all_schedule/',get_all_schedule, name='get_all_schedule'),
     path('api/create_schedule/',create_schedule, name='create_schedule')
 ]

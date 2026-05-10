@@ -117,6 +117,18 @@ def get_schedule(request, pk):
     serializer = ScheduleSerializer(schedule)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def get_all_schedule(request):
+    try:
+        schedule = Schedule.objects.using('members').all()
+
+    except Schedule.DoesNotExist:
+        return Response({"error": "Schedule not found"}, status=404)
+
+    data = [ScheduleSerializer(schedule_item).data for schedule_item in schedule]
+    return Response({'data': data}, status=201)
+
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
 def create_schedule(request):
@@ -155,5 +167,5 @@ def edit_schedule(request, pk):
         schedule.is_active = data['is_active']
     
     schedule.save(using="members")
-     
+
     return Response(status=204)   
