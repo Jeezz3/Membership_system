@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Members, Membership
+from .models import Members, Membership, Schedule
 
 
 class MembersSerializer(serializers.ModelSerializer):
@@ -12,4 +12,8 @@ class MembershipSerializer(serializers.ModelSerializer):
         model = Membership
         fields = ['member', 'active_until', 'remaining_sessions', 'is_paused', 'pause_start_date']
 
+class ScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Schedule
+        fields = ['name','days','time','max_attendance','is_routine', 'is_active']
 

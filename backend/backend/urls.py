@@ -17,7 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from api.views import me, member_item, create_member, delete_member, get_membership
+from api.views import me 
+from api.views import member_item, create_member, delete_member, get_membership, edit_membership
+from api.views import get_schedule, create_schedule
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +28,8 @@ urlpatterns = [
     path('api/me/', me, name='me'),
     path('api/member_item/', member_item, name='member_item'),
     path('api/create_member/', create_member, name='create_member'),
-    path('api/get_membership/<int:pk>/', get_membership, name='get_membership')
+    path('api/get_membership/<int:pk>/', get_membership, name='get_membership'),
+    path('api/edit_membership/<int:pk>/', edit_membership, name='edit_membership'),
+    path('api/get_schedule/', get_schedule, name='get_schedule'),
+    path('api/creat_schedule/',create_schedule, name='create_schedule')
 ]
