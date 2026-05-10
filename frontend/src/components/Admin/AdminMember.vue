@@ -58,29 +58,27 @@
             <Form v-slot="$form">
                 <div>
                     <label>Active Until</label>
-                    <DatePicker name="date"></DatePicker>
+                    <DatePicker name="date" v-model="membership_active_until"></DatePicker>
                 </div>
                 <div>
                     <label>Remaining Session</label>
-                    <InputNumber inputId="minmax-buttons" mode="decimal" showButtons :min="-1" :max="100">
+                    <InputNumber inputId="minmax-buttons" mode="decimal" showButtons :min="-1" :max="100" v-model="membership_remaining">
                     </InputNumber>
                 </div>
                 <div>
                         <label for="is_paused">Paused</label>
-                        <RadioButton inputId="is_paused" />
+                        <RadioButton inputId="is_paused" v-model="membership_is_paused" :binary="true"/>
                 </div>
                 <div>
                     <label>Paused Start Date</label>
-                    <DatePicker name="paused_date"></DatePicker>
+                    <DatePicker name="paused_date" v-model="membership_pause_start_date"></DatePicker>
                 </div>
-
-
             </Form>
         </div>
 
         <div class="button-section">
             <Button type="button" label="Cancel" @click="hide_add_member_dialog"></Button>
-            <Button type="button" label="Save" @click="hide_membership_dialog()"></Button>
+            <Button type="button" label="Save" @click="hide_membership_dialog(); edit_membership()"></Button>
         </div>
     </Dialog>   
 

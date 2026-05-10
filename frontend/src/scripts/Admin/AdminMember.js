@@ -17,6 +17,7 @@ import DatePicker from 'primevue/datepicker';
 import InputNumber from 'primevue/inputnumber';
 import RadioButton from 'primevue/radiobutton';
 import RadioButtonGroup from 'primevue/radiobuttongroup';
+import InputIcon from 'primevue/inputicon';
 
 
 
@@ -43,7 +44,13 @@ export default {
         global: {value: null, matchMode: FilterMatchMode.CONTAINS},
         name: {value: null, matchMode: FilterMatchMode.STARTS_WITH}
       },
-      membership_dialog: false
+      membership_dialog: false,
+      membership_id: null,
+      membership_active_until: null,
+      membership_remaining: null,
+      membership_is_paused: null,
+      membership_pause_start_date: null,
+
     }
   },
   mounted() {
@@ -106,7 +113,13 @@ export default {
         );
 
         res.then((resposne) => {
-          console.log(resposne);
+          let data = resposne.data;
+          console.log(data);
+          this.membership_id = user_id;
+          this.membership_active_until = data.active_until;
+          this.membership_remaining = data.remaining_sessions;
+          this.membership_is_paused = data.is_paused;
+          this.membership_pause_start_date = data.pause_start_date;
         })
 
       }catch{
@@ -115,6 +128,25 @@ export default {
 
 
 
+    },
+    edit_membership(){
+      const token = localStorage.getItem('access');
+
+      let input_data = {
+          "active_until": this.formatDate(this.membership_active_until),
+          "remaining_sessions": this.membership_remaining,
+          "is_paused": this.membership_is_paused
+        };
+
+      console.log(input_data)
+      try{
+        let res = axios.put('http://127.0.0.1:8000/api/edit_membership/' + this.membership_id + '/',
+          input_data,
+          {headers: { Authorization: `Bearer ${token}`}}
+        );
+      }catch{
+        alert("ERROR!");
+      }
     },
     show_add_member_dialog() {
       this.add_member_dialog = true;
@@ -125,8 +157,13 @@ export default {
     show_membership_dialog(){
       this.membership_dialog = true;
     },
-    hide_add_member_dialog(){
+    hide_membership_dialog(){
       this.membership_dialog = false;
-    }
+    },
+    formatDate(dateObj) {
+      if (!dateObj) return null;
+      // Convert JS Date → ISO string
+      return new Date(dateObj).toISOString();
+  }
   }
 }
