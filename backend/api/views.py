@@ -95,7 +95,6 @@ def edit_membership(request,pk):
 
     return Response(status=204)
 
-
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])
 def delete_member(request, member_id):
@@ -107,12 +106,11 @@ def delete_member(request, member_id):
     except Members.DoesNotExist:
         return Response(status=404)
     
-
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
-def get_schedule(request):
+def get_schedule(request, pk):
     try:
-        schedule = Schedule.objects.using('members').all()
+        schedule = Schedule.objects.using('members').get(schedule_id=pk)
     except Schedule.DoesNotExist:
         return Response({"error": "Schedule not found"}, status=404)
     
@@ -129,3 +127,33 @@ def create_schedule(request):
 
     return Response(status=201)
 
+@api_view(["PUT"])
+@permission_classes([IsAdminUser])
+def edit_schedule(request, pk):
+    data = request.data
+    try:
+        schedule = Schedule.objects.using('members').get(schedule_id=pk)
+    except Schedule.DoesNotExist:
+        return Response({"error": "Schedule not found"}, status=404)
+    
+    if data['name'] is not None:
+        schedule.name = data['name']
+
+    if data['days'] is not None:
+        schedule.days = data['days']
+
+    if data['time'] is not None:
+        schedule.time = data['time']
+
+    if data['max_att'] is not None:
+        schedule.max_attendance = data['max_att']
+
+    if data['is_routine'] is not None:
+        schedule.is_routine = data['is_routine']
+    
+    if data['is_active'] is not None:
+        schedule.is_active = data['is_active']
+    
+    schedule.save(using="members")
+     
+    return Response(status=204)   

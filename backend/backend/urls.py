@@ -31,5 +31,5 @@ urlpatterns = [
     path('api/get_membership/<int:pk>/', get_membership, name='get_membership'),
     path('api/edit_membership/<int:pk>/', edit_membership, name='edit_membership'),
     path('api/get_schedule/', get_schedule, name='get_schedule'),
-    path('api/creat_schedule/',create_schedule, name='create_schedule')
+    path('api/create_schedule/',create_schedule, name='create_schedule')
 ]

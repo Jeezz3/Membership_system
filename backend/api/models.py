@@ -44,6 +44,5 @@ class Schedule(models.Model):
     is_routine = models.IntegerField(null=True, default=1) # routine class or speical class, 0 -> speical, 1 --> routine, 2 --> holiday. If 1,2 autofill date based on weekday/holiday
     is_active = models.BooleanField(null=True)
 
-
     class Meta:
         app_label = 'api'
