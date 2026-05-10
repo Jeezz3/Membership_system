@@ -2,14 +2,10 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .models import Item, Members, Membership
-from .serializers import ItemSerializer, MembersSerializer, MembershipSerializer
+from .models import Members, Membership
+from .serializers import MembersSerializer, MembershipSerializer
 
 # Create your views here.
-class ItemViewSet(ModelViewSet):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    permission_classes = [IsAdminUser]
 
 class MembersViewSet(ModelViewSet):
     queryset = Members.objects.all()
@@ -50,7 +46,7 @@ def create_member(request):
     
     member = Members.objects.using('members').create(**serializer_member.validated_data)
 
-    membership = Membership.objects.using('membership').create(member_id=member.id)
+    membership = Membership.objects.using('members').create(member=member)
     serializer_membership = MembershipSerializer(membership)
 
     return Response({
@@ -62,7 +58,7 @@ def create_member(request):
 @permission_classes([IsAdminUser])
 def get_membership(request,pk):
     try:
-        membership = Membership.objects.using('membership').get(member_id=pk)
+        membership = Membership.objects.using('members').get(member_id=pk)
     except Membership.DoesNotExist:
         return Response({"error": "Membership not found"}, status=404)
 

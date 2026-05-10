@@ -97,14 +97,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'members.sqlite3',
     },
-    'membership': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'membership.sqlite3',
-    }
-    
 }
 
-DATABASE_ROUTERS = ['backend.db_routers.MembersRouter','backend.db_routers.MembershipRouter']
+DATABASE_ROUTERS = ['backend.db_routers.MembersRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -149,10 +144,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 def flush_members_db():
     try:
         call_command('flush', database='members', interactive=False)
-        call_command('flush', database='membership', interactive=False)
         print("Databases flushed on shutdown.")
     except Exception as e:
         print(f"Error flushing DBs: {e}")
 
 
-atexit.register(flush_members_db)
+#atexit.register(flush_members_db)

@@ -1,10 +1,6 @@
 from rest_framework import serializers
-from .models import Item, Members, Membership
+from .models import Members, Membership
 
-class ItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-        fields = '__all__'
 
 class MembersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,6 +10,6 @@ class MembersSerializer(serializers.ModelSerializer):
 class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
-        fields = ['member_id', 'active_until', 'remaining_sessions', 'is_paused', 'pause_start_date']
+        fields = ['member', 'active_until', 'remaining_sessions', 'is_paused', 'pause_start_date']
 
 
