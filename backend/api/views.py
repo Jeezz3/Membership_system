@@ -136,21 +136,23 @@ def get_all_schedule(request):
 
     data = [ScheduleSerializer(schedule_item).data for schedule_item in schedule]
     for data_item in data:
-        data_item['time'] = datetime.strptime(data_item['time'], '%H:%M:%S')
+        data_item['start_time'] = datetime.strptime(data_item['start_time'], '%H:%M:%S')
+        data_item['end_time'] = datetime.strptime(data_item['end_time'], '%H:%M:%S')
         return_data[data_item['days']].append(data_item)
 
     for key in return_data.keys():
-        return_data[key] = sorted(return_data[key], key=lambda x: x['time'])        
+        return_data[key] = sorted(return_data[key], key=lambda x: x['start_time'])        
 
     return Response({'data': return_data}, status=201)
 
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
 def create_schedule(request):
-    data = request.data
-    for schedule_info in data:
-        serialize_schedule = ScheduleSerializer(data=schedule_info)
-        Schedule.objects.using('members').create(**serialize_schedule.validated_data)
+    serialize_schedule = ScheduleSerializer(data=schedule_info)
+    if not serialize_schedule.is_valid():
+        return Response(serialize_schedule.errors, status=400)
+
+    Schedule.objects.using('members').create(**serialize_schedule.validated_data)
 
     return Response(status=201)
 

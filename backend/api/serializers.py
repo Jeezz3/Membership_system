@@ -15,5 +15,5 @@ class MembershipSerializer(serializers.ModelSerializer):
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
-        fields = ['id', 'name','days','time','max_attendance','is_routine', 'is_active']
+        fields = ['id', 'name','days','start_time','end_time','max_attendance','is_active']
 
