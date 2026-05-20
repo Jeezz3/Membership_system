@@ -1,4 +1,6 @@
 import axios from 'axios'
+import * as yup from 'yup';
+import { yupResolver } from '@primevue/forms/resolvers/yup';
 import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
@@ -39,14 +41,32 @@ export default {
         {name : 'Saturday'},
         {name : 'Sunday'}
       ],
+      day_to_idx: {
+        'Monday': 0,
+        'Tuesday': 1,
+        'Wednesday': 2,
+        'Thrusday': 3,
+        'Friday': 4,
+        'Saturday': 5,
+        'Sunday': 6
+      },
       display_create_dialog: false,
       display_edit_dialog: false,
       create_item_form: {
         name: '',
         day: '',
-        time: '',
-        max_attendance: ''
-      }
+        start_time: null,
+        end_time: null,
+        max_attendance: null
+      },
+      resolver: yupResolver(
+        yup.object({
+          name: yup.string().required("Name is required"),
+          day: yup.string().required("Day is required"),
+          start_time: yup.date().required("Start time is required"),
+          end_time: yup.date().required("End time is required"),
+          max_attendance: yup.number().min(1, "Must be at least 1").required("Max attendance is required")
+        }))
     }
   },
   mounted() {
@@ -83,29 +103,52 @@ export default {
         alert("ERROR!");
       };
     },
-    create_schedule_item(form_value) {
-      console.log(this.create_item_form);
+    create_schedule_item(event) {
+      const values = event.values; // Access validated values from the event object
+      console.log("Validated values:", values);
 
-      let input_data = {
-        'name' : this.create_item_form.name,
-        'days' : this.create_item_form.day,
-        'time' : this.formatDate(this.create_item_form.time.date),
-        'max_attendance' : this.create_item_form.max_attendance
-      }
-      const token = localStorage.getItem('access');
+      const input_data = {
+        name: values.name,
+        days: this.day_to_idx[values.day],
+        start_time: this.formatDate(values.start_time), 
+        end_time: this.formatDate(values.end_time),     
+        max_attendance: values.max_attendance
+      };
 
-      try{
-        let res = axios.post('http://127.0.0.1:8000/api/create_schedule/', input_data,
-          {headers: { Authorization: `Bearer ${token}`}}
-        );
-        res.then((response) => {
-          console.log(response);
-          this.get_schedule();
-        });
+      console.log("Formatted input data:", input_data);
 
-      }catch{
-        alert("ERROR!");
-      }
+      // check for overlap
+        let day_schedule = this.days.find(day => day.day === input_data.day).items;
+        console.log("day_schedule: ", day_schedule);
+
+        for (let i = 0; i < day_schedule.length; i++) {
+          let item = day_schedule[i];
+          if ((input_data.start_time >= item.start_time && input_data.start_time < item.end_time) ||
+              (input_data.end_time > item.start_time && input_data.end_time <= item.end_time) ||
+              (input_data.start_time <= item.start_time && input_data.end_time >= item.end_time)) {
+            alert("Schedule overlaps with existing schedule!");
+            return;
+          }
+        }
+
+
+      console.log("Input data to be sent to the backend:", input_data);
+
+      this.hide_create_dialog(); // Hide the dialog after form submission
+      // const token = localStorage.getItem('access');
+
+      // try{
+      //   let res = axios.post('http://127.0.0.1:8000/api/create_schedule/', input_data,
+      //     {headers: { Authorization: `Bearer ${token}`}}
+      //   );
+      //   res.then((response) => {
+      //     console.log(response);
+      //     this.get_schedule();
+      //   });
+
+      // }catch{
+      //   alert("ERROR!");
+      // }
 
     },
     string_date_to_time(string){
@@ -125,7 +168,7 @@ export default {
     },
     formatDate(dateObj) {
       if (!dateObj) return null;
-      return newDate(dateObj).toISOString();
+      return new Date(dateObj).toLocaleString();
     }
   }
 }

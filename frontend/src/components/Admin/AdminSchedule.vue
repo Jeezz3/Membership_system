@@ -35,26 +35,35 @@
 
     <Dialog v-model:visible="display_create_dialog" model header="Create Schedule">
         <div>
-            <Form v-slot="$form" @submut="create_schedule_item">
+            <Form v-slot="$form" :resolver="resolver" :initial-values="create_item_form" @submit="create_schedule_item">
                 <div>
-                    <label for="schedule_name">Name</label>
-                    <InputText v-model="create_item_form.name" id="schedule_name" autocomplete="off" />
+                    <label>Name</label>
+                    <InputText name="name" autocomplete="off" :invalid="!!$form.name?.invalid" />
+                    <small v-if="$form.name?.invalid">{{  $form.name.error?.message }}</small>
                 </div>
                 <div>
                     <label>Day</label>
-                    <Select v-model="create_item_form.day" :options="day_options" optionLabel="name" optionValue="name"  fluid></Select>
+                    <Select name="day" :options="day_options" optionLabel="name" optionValue="name"  fluid :invalid="!!$form.day?.invalid"></Select>
+                    <small v-if="$form.day?.invalid">{{  $form.day.error?.message }}</small>
                 </div>
                 <div>
-                    <label>Time</label>
-                    <DatePicker v-model="create_item_form.time" id="datepicker-timeonly" timeOnly fluid />
+                    <label>Start Time</label>
+                    <DatePicker name="start_time" id="datepicker-timeonly" timeOnly fluid :invalid="!!$form.start_time?.invalid" />
+                    <small v-if="$form.start_time?.invalid">{{  $form.start_time.error?.message }}</small>
+                </div>
+                <div>
+                    <label>End Time</label>
+                    <DatePicker name="end_time" id="datepicker-timeonly" timeOnly fluid :invalid="!!$form.end_time?.invalid" />
+                    <small v-if="$form.end_time?.invalid">{{  $form.end_time.error?.message }}</small>
                 </div>
                 <div>
                     <label>Max Attendance</label>
-                    <InputNumber v-model="create_item_form.max_attendance" mode="decimal" showButtons :min="0"></InputNumber>
+                    <InputNumber name="max_attendance" mode="decimal" showButtons :min="1" :invalid="!!$form.max_attendance?.invalid"></InputNumber>
+                    <small v-if="$form.max_attendance?.invalid">{{  $form.max_attendance.error?.message }}</small>
                 </div>
                 <div class="button-section">
                     <Button type="button" label="Cancel" @click="hide_create_dialog"></Button>
-                    <Button type="submit" label="Create" @click="hide_create_dialog(); create_schedule_item()"></Button>
+                    <Button type="submit" label="Create"></Button>
                 </div>
             </Form>
         </div>
