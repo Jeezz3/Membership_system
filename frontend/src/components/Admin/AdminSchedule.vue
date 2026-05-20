@@ -8,7 +8,7 @@
                 <div v-for="item in day.items" style="width:15rem">
                     <Card style="width: 15rem">
                         <template #title>{{ item.name }}</template>
-                        <template #content>Time: {{ item.time }} Attendance: {{ item.max_attendance }}</template>
+                        <template #content>Start Time: {{ item.start_time }} End Time: {{ item.end_time }} Attendance: {{ item.max_attendance }}</template>
                         <template #footer>
                             <Button>
                                 <i class="pi pi-minus"></i>

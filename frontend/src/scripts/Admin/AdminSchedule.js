@@ -73,7 +73,8 @@ export default {
             let obj_item_list = data_obj.items
             for(let j = 0; j < obj_item_list.length; j++){
               let item = obj_item_list[j];
-              item['time'] = this.string_date_to_time(item['time']);
+              item['start_time'] = this.string_date_to_time(item['start_time']);
+              item['end_time'] = this.string_date_to_time(item['end_time']);
             }
           }
           console.log("this.days: ", this.days);
@@ -84,13 +85,27 @@ export default {
     },
     create_schedule_item(form_value) {
       console.log(this.create_item_form);
+
       let input_data = {
         'name' : this.create_item_form.name,
         'days' : this.create_item_form.day,
         'time' : this.formatDate(this.create_item_form.time.date),
-        'max_attendance' : 
+        'max_attendance' : this.create_item_form.max_attendance
       }
       const token = localStorage.getItem('access');
+
+      try{
+        let res = axios.post('http://127.0.0.1:8000/api/create_schedule/', input_data,
+          {headers: { Authorization: `Bearer ${token}`}}
+        );
+        res.then((response) => {
+          console.log(response);
+          this.get_schedule();
+        });
+
+      }catch{
+        alert("ERROR!");
+      }
 
     },
     string_date_to_time(string){
