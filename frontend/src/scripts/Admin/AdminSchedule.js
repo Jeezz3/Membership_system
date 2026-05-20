@@ -87,7 +87,8 @@ export default {
       let input_data = {
         'name' : this.create_item_form.name,
         'days' : this.create_item_form.day,
-        'time' : this.create_item_form.time.date
+        'time' : this.formatDate(this.create_item_form.time.date),
+        'max_attendance' : 
       }
       const token = localStorage.getItem('access');
 
