@@ -125,9 +125,24 @@ def get_all_schedule(request):
 
     except Schedule.DoesNotExist:
         return Response({"error": "Schedule not found"}, status=404)
+    
+    return_data = {0: [],
+                    1: [],
+                    2: [],
+                    3: [],
+                    4: [],
+                    5: [],
+                    6: []}
 
     data = [ScheduleSerializer(schedule_item).data for schedule_item in schedule]
-    return Response({'data': data}, status=201)
+    for data_item in data:
+        data_item['time'] = datetime.strptime(data_item['time'], '%H:%M:%S')
+        return_data[data_item['days']].append(data_item)
+
+    for key in return_data.keys():
+        return_data[key] = sorted(return_data[key], key=lambda x: x['time'])        
+
+    return Response({'data': return_data}, status=201)
 
 @api_view(['POST'])
 @permission_classes([IsAdminUser])
